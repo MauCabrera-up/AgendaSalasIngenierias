@@ -58,7 +58,7 @@
     .mapa-container {
       position: relative;
       width: 100%;
-      max-width: 900px;
+      max-width: 1000px;
       margin: 0 auto;
     }
 
@@ -69,11 +69,10 @@
       display: block;
     }
 
-    /* Puntos clickeables sobre el mapa */
     .punto-sala {
       position: absolute;
-      width: 36px;
-      height: 36px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
       background: #48bb78;
       color: white;
@@ -81,29 +80,30 @@
       align-items: center;
       justify-content: center;
       font-weight: bold;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       cursor: pointer;
       transition: all 0.3s ease;
       box-shadow: 0 2px 8px rgba(0,0,0,0.3);
       text-decoration: none;
+      border: 2px solid white;
     }
 
     .punto-sala:hover {
-      transform: scale(1.2);
+      transform: scale(1.15);
       background: #38a169;
     }
 
-    /* Posiciones aproximadas de las salas en el mapa */
-    .pos-1 { top: 18%; left: 78%; }   /* Berlín */
-    .pos-2 { top: 14%; left: 88%; }   /* Estambul */
-    .pos-3 { top: 72%; left: 82%; }   /* Londres */
-    .pos-4 { top: 68%; left: 72%; }   /* Madrid */
-    .pos-5 { top: 62%; left: 62%; }   /* México */
-    .pos-6 { top: 58%; left: 52%; }   /* Nueva York */
-    .pos-7 { top: 58%; left: 42%; }   /* París */
-    .pos-8 { top: 58%; left: 32%; }   /* Roma */
-    .pos-9 { top: 58%; left: 22%; }   /* Singapur */
-    .pos-10 { top: 25%; left: 55%; }  /* Tokio */
+    /* Posiciones corregidas según plano 3D */
+    .pos-1 { top: 22%; left: 72%; }   /* A - Berlín (arriba derecha) */
+    .pos-2 { top: 22%; left: 82%; }   /* B - Estambul (arriba derecha, junto a Berlín) */
+    .pos-3 { top: 68%; left: 85%; }   /* C - Londres (abajo derecha) */
+    .pos-4 { top: 68%; left: 75%; }   /* D - Madrid (abajo derecha, junto a Londres) */
+    .pos-5 { top: 68%; left: 62%; }   /* E - México (abajo centro-derecha) */
+    .pos-6 { top: 68%; left: 42%; }   /* F - Nueva York (abajo centro-izquierda) */
+    .pos-7 { top: 68%; left: 32%; }   /* G - París (abajo izquierda, junto a Roma) */
+    .pos-8 { top: 68%; left: 22%; }   /* H - Roma (abajo izquierda) */
+    .pos-9 { top: 68%; left: 10%; }   /* I - Singapur (abajo extrema izquierda) */
+    .pos-10 { top: 42%; left: 48%; }  /* J - Tokio (centro arriba) */
 
     .salas-grid {
       display: grid;
@@ -171,11 +171,6 @@
       color: #22543d;
     }
 
-    .estado-ocupada {
-      background: #fed7d7;
-      color: #742a2a;
-    }
-
     .estado::before {
       content: '';
       width: 8px;
@@ -231,16 +226,15 @@
       font-size: 0.9rem;
     }
 
-    /* Responsive */
     @media (max-width: 768px) {
       header h1 {
         font-size: 1.5rem;
       }
 
       .punto-sala {
-        width: 28px;
-        height: 28px;
-        font-size: 0.7rem;
+        width: 32px;
+        height: 32px;
+        font-size: 0.65rem;
       }
 
       .salas-grid {
@@ -258,9 +252,8 @@
 
   <div class="container">
 
-    <!-- Mapa Interactivo -->
     <section class="mapa-section">
-      <h2>📍 Plano de Salas</h2>
+      <h2>📍 Plano de Oficinas Ingenierías</h2>
       <div class="leyenda">
         <div class="leyenda-item">
           <div class="leyenda-color" style="background: #48bb78;"></div>
@@ -272,9 +265,8 @@
         </div>
       </div>
       <div class="mapa-container">
-        <!-- Reemplaza esta URL con tu imagen subida a GitHub o Imgur -->
-        <img src="plano1.png" alt="Plano de salas de ingenierías" id="mapa-img"/>        
-        <!-- Puntos clickeables -->
+        <img src="plano-oficinas-3d.jpg" alt="Plano de oficinas ingenierías" id="mapa-img"/>
+        
         <a href="https://calendar.app.google/x6pxn54AVr87dccw5" class="punto-sala pos-1" title="Berlín">1</a>
         <a href="https://calendar.app.google/zodJBc9SW7dK7NH29" class="punto-sala pos-2" title="Estambul">2</a>
         <a href="https://calendar.app.google/TQt4UEpUdzr1HMyJ7" class="punto-sala pos-3" title="Londres">3</a>
@@ -288,7 +280,6 @@
       </div>
     </section>
 
-    <!-- Tarjetas de Salas -->
     <section class="salas-grid">
 
       <div class="sala-card">
