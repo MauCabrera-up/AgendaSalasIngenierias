@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Agenda Salas Ingenierías</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f7fa;
+      color: #2c3e50;
+      line-height: 1.6;
+    }
+
+    header {
+      background: #1a365d;
+      color: white;
+      text-align: center;
+      padding: 2rem 1rem;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    header p {
+      opacity: 0.9;
+      font-size: 1.1rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+
+    .mapa-section {
+      background: white;
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .mapa-section h2 {
+      text-align: center;
+      margin-bottom: 1rem;
+      color: #1a365d;
+    }
+
+    .mapa-container {
+      position: relative;
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .mapa-container img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      display: block;
+    }
+
+    /* Puntos clickeables sobre el mapa */
+    .punto-sala {
+      position: absolute;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #48bb78;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      text-decoration: none;
+    }
+
+    .punto-sala:hover {
+      transform: scale(1.2);
+      background: #38a169;
+    }
+
+    /* Posiciones aproximadas de las salas en el mapa */
+    .pos-1 { top: 18%; left: 78%; }   /* Berlín */
+    .pos-2 { top: 14%; left: 88%; }   /* Estambul */
+    .pos-3 { top: 72%; left: 82%; }   /* Londres */
+    .pos-4 { top: 68%; left: 72%; }   /* Madrid */
+    .pos-5 { top: 62%; left: 62%; }   /* México */
+    .pos-6 { top: 58%; left: 52%; }   /* Nueva York */
+    .pos-7 { top: 58%; left: 42%; }   /* París */
+    .pos-8 { top: 58%; left: 32%; }   /* Roma */
+    .pos-9 { top: 58%; left: 22%; }   /* Singapur */
+    .pos-10 { top: 25%; left: 55%; }  /* Tokio */
+
+    .salas-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .sala-card {
+      background: white;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      border-left: 5px solid #48bb78;
+    }
+
+    .sala-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+
+    .sala-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .sala-letra {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      background: #1a365d;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .sala-info h3 {
+      color: #1a365d;
+      font-size: 1.3rem;
+    }
+
+    .sala-info p {
+      color: #718096;
+      font-size: 0.95rem;
+    }
+
+    .estado {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .estado-libre {
+      background: #c6f6d5;
+      color: #22543d;
+    }
+
+    .estado-ocupada {
+      background: #fed7d7;
+      color: #742a2a;
+    }
+
+    .estado::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .btn-calendario {
+      display: block;
+      width: 100%;
+      padding: 0.875rem;
+      background: #3182ce;
+      color: white;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 10px;
+      font-weight: 600;
+      transition: background 0.2s ease;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .btn-calendario:hover {
+      background: #2c5282;
+    }
+
+    .leyenda {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin: 1.5rem 0;
+      flex-wrap: wrap;
+    }
+
+    .leyenda-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .leyenda-color {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: #718096;
+      font-size: 0.9rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 1.5rem;
+      }
+
+      .punto-sala {
+        width: 28px;
+        height: 28px;
+        font-size: 0.7rem;
+      }
+
+      .salas-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🏢 Agenda Salas Ingenierías</h1>
+    <p>Reserva tu sala de juntas en un clic</p>
+  </header>
+
+  <div class="container">
+
+    <!-- Mapa Interactivo -->
+    <section class="mapa-section">
+      <h2>📍 Plano de Salas</h2>
+      <div class="leyenda">
+        <div class="leyenda-item">
+          <div class="leyenda-color" style="background: #48bb78;"></div>
+          <span>Disponible</span>
+        </div>
+        <div class="leyenda-item">
+          <div class="leyenda-color" style="background: #f56565;"></div>
+          <span>Ocupada</span>
+        </div>
+      </div>
+      <div class="mapa-container">
+        <!-- Reemplaza esta URL con tu imagen subida a GitHub o Imgur -->
+        <img src="https://i.imgur.com/placeholder.jpg" alt="Plano de salas de ingenierías" id="mapa-img"/>
+        
+        <!-- Puntos clickeables -->
+        <a href="https://calendar.app.google/x6pxn54AVr87dccw5" class="punto-sala pos-1" title="Berlín">1</a>
+        <a href="https://calendar.app.google/zodJBc9SW7dK7NH29" class="punto-sala pos-2" title="Estambul">2</a>
+        <a href="https://calendar.app.google/TQt4UEpUdzr1HMyJ7" class="punto-sala pos-3" title="Londres">3</a>
+        <a href="https://calendar.app.google/Jnv8YhxrZu6z355n6" class="punto-sala pos-4" title="Madrid">4</a>
+        <a href="https://calendar.app.google/uYLtUvNSqXbzWAiM6" class="punto-sala pos-5" title="México">5</a>
+        <a href="https://calendar.app.google/PVWjcWg4iyBHScP89" class="punto-sala pos-6" title="Nueva York">6</a>
+        <a href="https://calendar.app.google/WdtCTtiu5Sw7HqkK8" class="punto-sala pos-7" title="París">7</a>
+        <a href="https://calendar.app.google/DQahk28A2P6cN1VDA" class="punto-sala pos-8" title="Roma">8</a>
+        <a href="https://calendar.app.google/hdpn5J9qxYPWV8gi7" class="punto-sala pos-9" title="Singapur">9</a>
+        <a href="https://calendar.app.google/dJLXZ9nU2tpc9o6w8" class="punto-sala pos-10" title="Tokio">10</a>
+      </div>
+    </section>
+
+    <!-- Tarjetas de Salas -->
+    <section class="salas-grid">
+
+      <div class="sala-card">
+        <div class="sala-header">
+          <div class="sala-letra">A</div>
+          <div class="sala-info">
+            <h3>Berlín</h3>
+            <p>Sala 1</p>
+          </div>
+        </div>
+        <span class="estado estado-libre">Disponible</span>
+        <a href="https://calendar.app.google/x6pxn54AVr87dccw5" class="btn-calendario" target="_blank">📅 Ver Calendario</a>
+      </div>
+
+      <div class="sala-card">
+        <div class="sala-header">
+          <div class="sala-letra">B</div>
+          <div class="sala-info">
+            <h3>Estambul</h3>
+            <p>Sala 2</p>
+          </div>
+        </div>
+        <span class="estado estado-libre">Disponible</span>
+        <a href="https://calendar.app.google/zodJBc9SW7dK7NH29" class="btn-calendario" target="_blank">📅 Ver Calendario</a>
+      </div>
+
+      <div class="sala-card">
+        <div class="sala-header">
+          <div class="sala-letra">C</div>
+          <div class="sala-info">
+            <h3>Londres</h3>
+            <p>Sala 3</p>
+          </div>
+        </div>
+        <span class="estado estado-libre">Disponible</span>
+        <a href="https://calendar.app.google/TQt4UEpUdzr1HMyJ7" class="btn-calendario" target="_blank">📅 Ver Calendario</a>
+      </div>
+
+      <div class="sala-card">
+        <div class="sala-header">
+          <div class="sala-letra">D</div>
+          <div class="sala-info">
+            <h3>Madrid</h3>
+            <p>Sala 4</p>
+          </div>
+        </div>
+        <span class="estado estado-libre">Disponible</span>
+        <a href="https://calendar.app.google/Jnv8YhxrZu6z355n6" class="btn-calendario" target="_blank">📅 Ver Calendario</a>
+      </div>
+
+      <div class="sala-card">
+        <div class="sala-header">
+          <div class="sala-letra">E</div>
+          <div class="sala-info">
+            <h3>México</h3>
+            <p>Sala 5</p>
+          </div>
+        </div>
+        <span class="estado estado-libre">Disponible</span>
+        <a href="https://calendar.app.google/uYLtUvNSqXbzWAiM6" class="btn-calendario" target="_blank">📅 Ver Calendario</a>
+      </div>
+
+      <div class="sala-card">
+        <div class="sala-header">
+          <div class="sala-letra">F</div>
+          <div class="sala-info">
+            <h3>Nueva York</h3>
+            <p>Sala 6</p>
+          </div>
+        </div>
+        <span class="estado estado-libre">Disponible</span>
+        <a href="https://calendar.app.google/PVWjcWg4iyBHScP89" class="btn-calendario" target="_blank">📅 Ver Calendario</a>
+      </div>
+
+      <div class="sala-card">
+        <div class="sala-header">
+          <div class="sala-letra">G</div>
+          <div class="sala-info">
+            <h3>París</h3>
+            <p>Sala 7</p>
+          </div>
+        </div>
+        <span class="estado estado-libre">Disponible</span>
+        <a href="https://calendar.app.google/WdtCTtiu5Sw7HqkK8" class="btn-calendario" target="_blank">📅 Ver Calendario</a>
+      </div>
+
+      <div class="sala-card">
+        <div class="sala-header">
+          <div class="sala-letra">H</div>
+          <div class="sala-info">
+            <h3>Roma</h3>
+            <p>Sala 8</p>
+          </div>
+        </div>
+        <span class="estado estado-libre">Disponible</span>
+        <a href="https://calendar.app.google/DQahk28A2P6cN1VDA" class="btn-calendario" target="_blank">📅 Ver Calendario</a>
+      </div>
+
+      <div class="sala-card">
+        <div class="sala-header">
+          <div class="sala-letra">I</div>
+          <div class="sala-info">
+            <h3>Singapur</h3>
+            <p>Sala 9</p>
+          </div>
+        </div>
+        <span class="estado estado-libre">Disponible</span>
+        <a href="https://calendar.app.google/hdpn5J9qxYPWV8gi7" class="btn-calendario" target="_blank">📅 Ver Calendario</a>
+      </div>
+
+      <div class="sala-card">
+        <div class="sala-header">
+          <div class="sala-letra">J</div>
+          <div class="sala-info">
+            <h3>Tokio</h3>
+            <p>Sala 10</p>
+          </div>
+        </div>
+        <span class="estado estado-libre">Disponible</span>
+        <a href="https://calendar.app.google/dJLXZ9nU2tpc9o6w8" class="btn-calendario" target="_blank">📅 Ver Calendario</a>
+      </div>
+
+    </section>
+
+  </div>
+
+  <footer>
+    <p>🏢 Agenda Salas Ingenierías — Reserva fácil, trabaja mejor</p>
+  </footer>
+
+</body>
+</html>
